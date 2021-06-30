@@ -9,6 +9,8 @@ rec{
   # Palette constructor
   # Produces a palette of colors starting from sane defaults
   # Override the inputs with your favorite colors
+  #
+  # Ex: palette.palette {} =>
   palette =
     { black ? color.black
     , red ? color.red
