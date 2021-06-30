@@ -35,7 +35,6 @@ rec {
       assert(isFloat f);
       int + inc;
 
-
   # Round float to closest integer
   round = f:
     let

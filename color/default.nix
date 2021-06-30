@@ -34,21 +34,29 @@ let
   # Apply function to hue value and map the result in [0, 360)
   _tHue = f: v: mod' (f v) 360.0;
 
+  # Convert 8bit value to a 2 digit hex string
   _toHex = values:
     assert(all (v: _is8Bit v) values);
     ''#${concatMapStrings (v: fixedWidthString 2 "0" (fromDec (round (toFloat v)))) values}'';
 
+  # Parse input for hex triplet
+  #
+  # Es: _match3hex "#001122" => ["00" "11" "22"]
   _match3hex = match "#([[:xdigit:]]{2})([[:xdigit:]]{2})([[:xdigit:]]{2})";
 
+  # Parse input for hex quadruplet
+  #
+  # Es: _match3hex "#00112233" => ["00" "11" "22" "33"]
   _match4hex = match "#([[:xdigit:]]{2})([[:xdigit:]]{2})([[:xdigit:]]{2})([[:xdigit:]]{2})";
 
+  # Apply an operator using a possibly relative operand
   _relative_operator = operator: prev: value:
     let
       percentMatches = match "[[:space:]]*(-?[[:digit:]]+\.?[[:digit:]]*)%[[:space:]]*" value;
       percentValue = if percentMatches != null then fromJSON (head percentMatches) else null;
     in
-      if isNumber value then operator prev value
-      else prev * ((operator 100.0 percentValue) / 100.0);
+      if isNumber value then operator prev value           # If the input is a number, apply it directly
+      else prev * ((operator 100.0 percentValue) / 100.0); # Else if the input is a percentage apply it relatively to the original input
 
   _relative_addition = _relative_operator add;
   _relative_subtraction = _relative_operator sub;
@@ -60,22 +68,20 @@ rec {
   #
   # Uses [0,255] float representation for all fields
   rgba = { r, g, b, a ? 255.0 }:
-    assert (_is8Bit r);
-    assert (_is8Bit g);
-    assert (_is8Bit b);
-    assert (_is8Bit a);
-    { inherit r g b a; };
+    let
+      c = { inherit r g b a; };
+    in
+      assert(isRgba c); c;
 
   # HSLA constructor
   #
   # Uses [0, 360) float representation for h
   # Uses [0,1] float representation for s l and a
   hsla = { h, l, s, a ? 1.0 }:
-    assert (_isHue h);
-    assert (_isUnary s);
-    assert (_isUnary l);
-    assert (_isUnary a);
-    { inherit h s l a; };
+    let
+      c = { inherit h s l a; };
+    in
+      assert(isHsla c); c;
 
   # Check if input is a valid RGBA color
   isRgba = c:
@@ -151,29 +157,36 @@ rec {
     in
       assert (isHsla color);
       rgba {
-        r = _clamp8Bit ((r' + m) * 255.0);
-        g = _clamp8Bit ((g' + m) * 255.0);
-        b = _clamp8Bit ((b' + m) * 255.0);
-        a = _clamp8Bit (a * 255.0);
+        r = (r' + m) * 255.0;
+        g = (g' + m) * 255.0;
+        b = (b' + m) * 255.0;
+        a = a * 255.0;
       };
 
 
   ## TRANSFORM PRIMITIVES
+
+  # Apply a function to one of the RGBA parameters
+  # Automatically checks the input and clamps the output to a valid RGBA color
   tRedRgba = f: color: assert (isRgba color); color // { r = _tclamp8Bit f color.r; };
   tGreenRgba = f: color: assert (isRgba color); color // { g = _tclamp8Bit f color.g; };
   tBlueRgba = f: color: assert (isRgba color); color // { b = _tclamp8Bit f color.b; };
   tAlphaRgba = f: color: assert (isRgba color); color // { a = _tclamp8Bit f color.a; };
 
+  # Set functions for RGBA colors
   setRedRgba = r: color: tGreenRgba (v: r) color;
   setGreenRgba = g: color: tBlueRgba (v: g) color;
   setBlueRgba = b: color: tAlphaRgba (v: b) color;
   setAlphaRgba = a: color: tRedRgba (v: a) color;
 
+  # Apply a function to one of the HSLA parameters
+  # Automatically checks the input and clamps the output to a valid HSLA color
   tHueHsla = f: color: assert (isHsla color); color // { h = _tHue f color.h; };
   tSaturationnHsla = f: color: assert (isHsla color); color // { s = _tclampUnary f color.s; };
   tLightnessHsla = f: color: assert (isHsla color); color // { l = _tclampUnary f color.l; };
   tAlphaHsla = f: color: assert (isHsla color); color // { a = _tclampUnary f color.a; };
 
+  # Set functions for HSLA colors
   setHueHsla = h: color: tHueHsla (v: h) color;
   setSaturationnHsla = s: color: tSaturationnHsla (v: s) color;
   setLightnessHsla = l: color: tLightnessHsla (v: l) color;
