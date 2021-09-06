@@ -19,20 +19,6 @@ rec{
     magenta = rgba magenta;
     cyan = rgba cyan;
     white = rgba white;
-
-    # primary = {
-    #   background = rgba primary-background;
-    #   foreground = rgba primary-foreground;
-    #   dim_foreground = rgba primary-dim_foreground;
-    # };
-    # cursor = {
-    #   cursor = rgba cursor-cursor;
-    #   text = rgba cursor-text;
-    # };
-    # vi_mode_cursor = {
-    #   cursor = rgba cursor-cursor;
-    #   text = rgba cursor-text;
-    # };
   };
 
   ## TRANSFORM
