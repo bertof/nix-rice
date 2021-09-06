@@ -34,10 +34,13 @@ let
   # Apply function to hue value and map the result in [0, 360)
   _tHue = f: v: mod' (f v) 360.0;
 
-  # Convert 8bit value to a 2 digit hex string
-  _toHex = values:
+  # Convert 8bit value to a 2 digit hex string without initial #
+  _toShortHex = values:
     assert(all (v: _is8Bit v) values);
-    ''#${concatMapStrings (v: fixedWidthString 2 "0" (fromDec (round (toFloat v)))) values}'';
+    ''${concatMapStrings (v: fixedWidthString 2 "0" (fromDec (round (toFloat v)))) values}'';
+
+  # Convert 8bit value to a 2 digit hex string
+  _toHex = values: "#${_toShortHex values}";
 
   # Parse input for hex triplet
   #
@@ -196,9 +199,9 @@ rec {
   # Add brightness as number value or relative percent value
   # Allows both positive and negative values
   #
-  # Es: brighten red 10.2 => { a = 255; b = 10.2; g = 10.2; r = 255; }
-  # Es: brighten white "-10%" => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
-  brighten = color: value:
+  # Es: brighten 10.2 red => { a = 255; b = 10.2; g = 10.2; r = 255; }
+  # Es: brighten "-10%" white => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
+  brighten = value: color:
     let
       valueTransform = v: _relative_addition v value;
     in
@@ -207,9 +210,9 @@ rec {
   # Subtract brightness as number value or relative percent value
   # Allows both positive and negative values
   #
-  # Es: darken red 10.2 => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
-  # Es: darken white "10%" => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
-  darken = color: value:
+  # Es: darken 10.2 red => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
+  # Es: darken "10%" white => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
+  darken = value: color:
     let
       valueTransform = v: _relative_subtraction v value;
     in
@@ -219,9 +222,9 @@ rec {
   ## HSLA transform
   # Shft HSLA hue by a number value or relative percent value
   #
-  # Es: shiftHue (rgbaToHsla red) 120 = { a = 1; h = 120; l = 0.5; s = 1; }
-  # Es: shiftHue (rgbaToHsla green) "100%" = { a = 1; h = 240; l = 0.5; s = 1; }
-  shiftHue = color: value:
+  # Es: shiftHue 120 (rgbaToHsla red) = { a = 1; h = 120; l = 0.5; s = 1; }
+  # Es: shiftHue "100%" (rgbaToHsla green) = { a = 1; h = 240; l = 0.5; s = 1; }
+  shiftHue = value: color:
     tHueHsla (h: _relative_addition h value) color;
 
 
@@ -279,6 +282,38 @@ rec {
   # Print RGBA color as lowercase hex string in the form argb (Polybar uses this format)
   toArgbHex = color: toLower (toArgbHex color);
 
+  # Print RGB color as uppercase short hex string
+  toRGBShortHex = color:
+    let
+      inherit (color) r g b;
+    in
+      assert (isRgba color);
+      _toShortHex [ r g b ];
+
+  # Print RGBA color as uppercase short hex string
+  toRGBAShortHex = color:
+    let
+      inherit (color) r g b a;
+    in
+      assert (isRgba color);
+      _toShortHex [ r g b a ];
+
+  # Print RGBA color as uppercase short hex string in the form ARGB (Polybar uses this format)
+  toARGBShortHex = color:
+    let
+      inherit (color) r g b a;
+    in
+      assert (isRgba color);
+      _toShortHex [ a r g b ];
+
+  # Print RGB color as lowercase short hex string
+  toRgbShortHex = color: toLower (toRGBShortHex color);
+
+  # Print RGBA color as lowercase short hex string
+  toRgbaShortHex = color: toLower (toRGBAShortHex color);
+
+  # Print RGBA color as lowercase short hex string in the form argb (Polybar uses this format)
+  toArgbShortHex = color: toLower (toArgbShortHex color);
 
   ## CONSTANTS
   black = hexToRgba "#000000"; #         RGB (0,0,0)       HSL (0°,0%,0%)

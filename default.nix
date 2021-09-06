@@ -6,11 +6,11 @@
 let
   callPackage = lib.callPackageWith (pkgs // self);
   self = rec {
-    op = callPackage ./operators {};
-    float = callPackage ./float {};
-    hex = callPackage ./hex {};
-    color = callPackage ./color {};
-    palette = callPackage ./palette {};
+    op = callPackage ./operators.nix {};
+    float = callPackage ./float.nix {};
+    hex = callPackage ./hex.nix {};
+    color = callPackage ./color.nix {};
+    palette = callPackage ./palette.nix {};
   };
 in
 (self)
