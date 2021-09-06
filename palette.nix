@@ -26,10 +26,10 @@ rec{
   tPalette = f: p: mapAttrsRecursiveCond (v: !color.isRgba v) (a: v: f v) p;
 
   # Brighten a palette
-  brightenPalette = value: palette: tPalette (color.brighten value) palette;
+  brighten = value: palette: tPalette (color.brighten value) palette;
 
   # Darken a palette
-  darkenPalette = value: palette: tPalette (color.darken value) palette;
+  darken = value: palette: tPalette (color.darken value) palette;
 
   ## SERIALIZATION
   # Try to convert input colors to a lowercase hex encoded RGBA color
