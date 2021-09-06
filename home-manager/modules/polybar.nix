@@ -1,7 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-
-  # Some programs I use in my scripts
   grep = "${pkgs.gnugrep}/bin/grep";
   cut = "${pkgs.coreutils}/bin/cut";
   head = "${pkgs.coreutils}/bin/head";
@@ -10,25 +8,25 @@ let
   pkill = "${pkgs.procps}/bin/pkill";
   playerCtl = "${pkgs.playerctl}/bin/playerctl";
   playerStatus = "${playerCtl} -f '{{emoji(status)}} {{title}} - {{artist}}' metadata | ${head} -c 60";
-
-  # Palette serialisation to ARGB hex strings
+  alacritty = "${pkgs.alacritty}/bin/alacritty";
+  btm = "${pkgs.bottom}/bin/btm";
   colors = with pkgs.rice; palette.toARGBHex rec {
 
     normal = {
-      foreground = colorPalette.primary.foreground;
-      background = colorPalette.primary.background;
+      foreground = colorPalette.normal.white;
+      background = colorPalette.normal.black;
       underline = colorPalette.normal.blue;
     };
 
-    active = palette.tPalette (c: color.brighten c "50%") normal;
+    active = palette.brighten "50%" normal;
 
     selected = {
       foreground = colorPalette.bright.white;
-      background = color.tAlphaRgba (v: 240) colorPalette.dim.blue;
-      underline = colorPalette.dim.white;
+      background = color.tAlphaRgba (v: 240) colorPalette.dark.blue;
+      underline = colorPalette.dark.white;
     };
 
-    alert = orange;
+    alert = colorPalette.bright.red;
 
     green = colorPalette.normal.green;
     yellow = colorPalette.normal.yellow;
@@ -63,9 +61,9 @@ let
       bottom.size = 0;
     };
     font = [
-      "${pkgs.rice.font.monospace.name}:size=9;2"
-      "Material Design Icons:size=9;2"
-      "NotoEmoji Nerd Font Mono:size=9;0"
+      "${pkgs.rice.font.monospace.name}:size=${toString pkgs.rice.font.monospace.size};2"
+      "Material Design Icons:size=${toString pkgs.rice.font.monospace.size};2"
+      "NotoEmoji Nerd Font Mono:size=${toString pkgs.rice.font.monospace.size};0"
     ];
     wm-restack = "bspwm";
   };
@@ -170,7 +168,7 @@ in
             focused = colors.selected // common;
             occupied = colors.active // common;
             urgent = colors.active // common // { background = colors.alert; };
-            empty = colors.normal // common;
+            empty = colors.normal // common // { text = "󰧟"; padding = 0; };
           };
       };
 
@@ -328,7 +326,7 @@ in
         format = colors.normal // {
           padding = 1;
         };
-        exec = "${playerStatus}";
+        exec = playerStatus;
         click.left = "${playerCtl} play-pause";
         scroll = {
           up = "${playerCtl} previous";
