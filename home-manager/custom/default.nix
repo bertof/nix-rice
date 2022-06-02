@@ -5,7 +5,7 @@
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // self);
   self = {
-    lockscreen = callPackage ./lockscreen {};
+    lockscreen = callPackage ./lockscreen { };
   };
 in
 (self)

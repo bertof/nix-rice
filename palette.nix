@@ -1,4 +1,4 @@
-{ pkgs, color, lib, ... }:
+{ color, lib, ... }:
 let
   inherit (builtins) isString;
   inherit (lib.attrsets) mapAttrsRecursiveCond;
@@ -23,13 +23,13 @@ rec{
 
   ## TRANSFORM
   # Map palette applying a transform
-  tPalette = f: p: mapAttrsRecursiveCond (v: !color.isRgba v) (a: v: f v) p;
+  tPalette = f: mapAttrsRecursiveCond (v: !color.isRgba v) (_: f);
 
   # Brighten a palette
-  brighten = value: palette: tPalette (color.brighten value) palette;
+  brighten = value: tPalette (color.brighten value);
 
   # Darken a palette
-  darken = value: palette: tPalette (color.darken value) palette;
+  darken = value: tPalette (color.darken value);
 
   ## SERIALIZATION
   # Try to convert input colors to a lowercase hex encoded RGBA color

@@ -1,14 +1,16 @@
-final: prev:
 let
-  nix-rice = final.callPackage (
-    fetchTarball {
-      url = "https://github.com/bertof/nix-rice/archive/refs/tags/v0.2.0.tar.gz";
-      sha256 = "1spv4i753abrswbzawdc2rh8889s09njk1nbjdzvlp731prrr2yh";
-    }
-  ) {};
+  nix-rice = final.callPackage
+    (
+      fetchTarball {
+        url = "https://github.com/bertof/nix-rice/archive/refs/tags/v0.2.0.tar.gz";
+        sha256 = "1spv4i753abrswbzawdc2rh8889s09njk1nbjdzvlp731prrr2yh";
+      }
+    )
+    { };
   nord = import ../themes/nord.nix;
-  onedark = import ../themes/onedark.nix;
+  # onedark = import ../themes/onedark.nix;
 in
+final: _:
 (
   rec {
     rice = nix-rice // {

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 let
   grep = "${pkgs.gnugrep}/bin/grep";
   cut = "${pkgs.coreutils}/bin/cut";
@@ -8,8 +8,8 @@ let
   pkill = "${pkgs.procps}/bin/pkill";
   playerCtl = "${pkgs.playerctl}/bin/playerctl";
   playerStatus = "${playerCtl} -f '{{emoji(status)}} {{title}} - {{artist}}' metadata | ${head} -c 60";
-  alacritty = "${pkgs.alacritty}/bin/alacritty";
-  btm = "${pkgs.bottom}/bin/btm";
+  # alacritty = "${pkgs.alacritty}/bin/alacritty";
+  # btm = "${pkgs.bottom}/bin/btm";
   colors = with pkgs.rice; palette.toARGBHex rec {
 
     normal = {
@@ -22,7 +22,7 @@ let
 
     selected = {
       foreground = colorPalette.bright.white;
-      background = color.tAlphaRgba (v: 240) colorPalette.dark.blue;
+      background = color.tAlphaRgba (_: 240) colorPalette.dark.blue;
       underline = colorPalette.dark.white;
     };
 
@@ -157,13 +157,14 @@ in
         type = "internal/bspwm";
         format = "<label-state>";
 
-        label = let
-          common = {
-            padding = 1;
-            separator = " ";
-            text = "%name%";
-          };
-        in
+        label =
+          let
+            common = {
+              padding = 1;
+              separator = " ";
+              text = "%name%";
+            };
+          in
           {
             focused = colors.selected // common;
             occupied = colors.active // common;

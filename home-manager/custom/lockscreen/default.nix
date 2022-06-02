@@ -1,12 +1,10 @@
-{ lib
-, stdenv
-, rice
+{ rice
 , roboto
 , i3lock-color
 , update-background
 , writeScript
 , font ? { package = roboto; name = "Roboto"; }
-, palette ? rice.palette.palette {}
+, palette ? rice.palette.palette { }
 , ...
 }:
 let

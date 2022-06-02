@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
   strPalette = with pkgs.rice; palette.toRgbHex rec {
     inherit (colorPalette) normal bright;

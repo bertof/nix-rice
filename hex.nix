@@ -28,8 +28,8 @@ let
         "F" = 15;
       };
     in
-      assert(hasAttr k dict);
-      getAttr k dict;
+    assert(hasAttr k dict);
+    getAttr k dict;
 
 in
 rec {
@@ -40,7 +40,7 @@ rec {
       characters = stringToCharacters s;
       values = map _parseDigit characters;
     in
-      foldl (acc: n: acc * 16 + n) 0 values;
+    foldl (acc: n: acc * 16 + n) 0 values;
 
   # Convert an integer to a decimal string
   fromDec = toHexString;

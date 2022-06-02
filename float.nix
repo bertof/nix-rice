@@ -12,10 +12,10 @@ rec {
       strVal = fromJSON v;
       forceFloat = i: if isFloat i then i else i + 0.5 - 0.5;
     in
-      assert (isNumber v || isString v);
-      if isString v then forceFloat strVal
-      else if isInt v then forceFloat v
-      else v;
+    assert (isNumber v || isString v);
+    if isString v then forceFloat strVal
+    else if isInt v then forceFloat v
+    else v;
 
   # Round float to lower integer
   floor = f:
@@ -23,8 +23,8 @@ rec {
       floatComponents = splitString "." (toString f);
       int = toInt (head (floatComponents));
     in
-      assert(isFloat f);
-      int;
+    assert(isFloat f);
+    int;
 
   # Round float to upper integer
   ceil = f:
@@ -32,8 +32,8 @@ rec {
       int = div' f 1;
       inc = if mod' f 1 > 0 then 1 else 0;
     in
-      assert(isFloat f);
-      int + inc;
+    assert(isFloat f);
+    int + inc;
 
   # Round float to closest integer
   round = f:
@@ -41,8 +41,8 @@ rec {
       int = div' f 1;
       inc = if mod' f 1 >= 0.5 then 1 else 0;
     in
-      assert(isFloat f);
-      int + inc;
+    assert(isFloat f);
+    int + inc;
 
   # Integer division for floats
   div' = n: d:
@@ -55,7 +55,7 @@ rec {
     let
       f = div' n d;
     in
-      assert(isNumber n);
-      assert(isNumber d);
-      n - (toFloat f) * d;
+    assert(isNumber n);
+    assert(isNumber d);
+    n - (toFloat f) * d;
 }

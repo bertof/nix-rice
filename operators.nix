@@ -13,18 +13,8 @@ rec {
     if v < 0 then (-v) else v;
 
   # Check if `v` is between `a` and `b`
-  inRange = a: b: v:
-    let
-      ub = max a b;
-      lb = min a b;
-    in
-      (v <= ub) && (v >= lb);
+  inRange = a: b: v: (v <= max a b) && (v >=min a b);
 
   # Clamp `v` between `a` and `b`
-  clamp = a: b: v:
-    let
-      ub = max a b;
-      lb = min a b;
-    in
-      min (max v lb) ub;
+  clamp = a: b: v: min (max v (min a b)) (max a b);
 }

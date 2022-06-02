@@ -1,0 +1,3 @@
+.direnv
+*/flake.lock
+**/.pre-commit-config.yaml

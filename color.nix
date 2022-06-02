@@ -10,7 +10,7 @@ let
 
   ## 8BIT
   # Check if `v` is in 8Bit format
-  _is8Bit = v: inRange 0.0 255.0 v;
+  _is8Bit = inRange 0.0 255.0;
 
   # Clamp 8bit value
   _clamp8Bit = clamp 0.0 255.0;
@@ -36,7 +36,7 @@ let
 
   # Convert 8bit value to a 2 digit hex string without initial #
   _toShortHex = values:
-    assert(all (v: _is8Bit v) values);
+    assert(all (_is8Bit) values);
     ''${concatMapStrings (v: fixedWidthString 2 "0" (fromDec (round (toFloat v)))) values}'';
 
   # Convert 8bit value to a 2 digit hex string
@@ -58,8 +58,8 @@ let
       percentMatches = match "[[:space:]]*(-?[[:digit:]]+\.?[[:digit:]]*)%[[:space:]]*" value;
       percentValue = if percentMatches != null then fromJSON (head percentMatches) else null;
     in
-      if isNumber value then operator prev value           # If the input is a number, apply it directly
-      else prev * ((operator 100.0 percentValue) / 100.0); # Else if the input is a percentage apply it relatively to the original input
+    if isNumber value then operator prev value           # If the input is a number, apply it directly
+    else prev * ((operator 100.0 percentValue) / 100.0); # Else if the input is a percentage apply it relatively to the original input
 
   _relative_addition = _relative_operator add;
   _relative_subtraction = _relative_operator sub;
@@ -74,7 +74,7 @@ rec {
     let
       c = { inherit r g b a; };
     in
-      assert(isRgba c); c;
+    assert(isRgba c); c;
 
   # HSLA constructor
   #
@@ -84,7 +84,7 @@ rec {
     let
       c = { inherit h s l a; };
     in
-      assert(isHsla c); c;
+    assert(isHsla c); c;
 
   # Check if input is a valid RGBA color
   isRgba = c:
@@ -92,7 +92,7 @@ rec {
       hasAttributes = all (k: hasAttr k c) [ "r" "g" "b" "a" ];
       validRanges = all (k: _is8Bit (getAttr k c)) [ "r" "g" "b" "a" ];
     in
-      hasAttributes && validRanges;
+    hasAttributes && validRanges;
 
   # Check if input is a valid HSLA color
   isHsla = c:
@@ -100,7 +100,7 @@ rec {
       hasAttributes = all (k: hasAttr k c) [ "h" "s" "l" "a" ];
       validRanges = _isHue c.h && all (k: _isUnary (getAttr k c)) [ "s" "l" "a" ];
     in
-      hasAttributes && validRanges;
+    hasAttributes && validRanges;
 
   ## CONVERSION
   # RGBA to HSLA
@@ -117,28 +117,28 @@ rec {
 
       hue = (
         if delta == 0.0 then 0.0 else
-          if r == c_max then (mod' (((g - b) / delta) + 6) 6) else
-            if g == c_max then (b - r) / delta + 2 else
-              assert b == c_max; (r - g) / delta + 4
+        if r == c_max then (mod' (((g - b) / delta) + 6) 6) else
+        if g == c_max then (b - r) / delta + 2 else
+          assert b == c_max; (r - g) / delta + 4
       ) * 60;
       lightness = (c_min + c_max) / 2.0;
       saturation =
         if delta == 0.0 then 0.0 else
-          delta / (1 - abs (2.0 * lightness - 1.0));
+        delta / (1 - abs (2.0 * lightness - 1.0));
     in
-      assert (isRgba color);
-      hsla {
-        l = _clampUnary lightness;
-        s = _clampUnary saturation;
-        h = mod' hue 360.0;
-        a = _clampUnary a;
-      };
+    assert (isRgba color);
+    hsla {
+      l = _clampUnary lightness;
+      s = _clampUnary saturation;
+      h = mod' hue 360.0;
+      a = _clampUnary a;
+    };
 
   # HSLA to RGBA
   hslaToRgba = color:
     let
       # check if `v` is in [a, b)
-      _checkRange = a: b: v: a <= v && v < b;
+      # _checkRange = a: b: v: a <= v && v < b;
       c_color = hsla color;
       h = c_color.h;
       s = c_color.s;
@@ -149,22 +149,22 @@ rec {
       m = l - (c / 2.0);
 
       r' = if inRange 120 240 h then 0 else
-        if inRange 60 300 h then x else
-          c;
+      if inRange 60 300 h then x else
+      c;
       g' = if inRange 60 180 h then c else
-        if inRange 0 240 h then x else
-          0;
+      if inRange 0 240 h then x else
+      0;
       b' = if inRange 180 300 h then c else
-        if inRange 120 360 h then x else
-          0;
+      if inRange 120 360 h then x else
+      0;
     in
-      assert (isHsla color);
-      rgba {
-        r = (r' + m) * 255.0;
-        g = (g' + m) * 255.0;
-        b = (b' + m) * 255.0;
-        a = a * 255.0;
-      };
+    assert (isHsla color);
+    rgba {
+      r = (r' + m) * 255.0;
+      g = (g' + m) * 255.0;
+      b = (b' + m) * 255.0;
+      a = a * 255.0;
+    };
 
 
   ## TRANSFORM PRIMITIVES
@@ -177,10 +177,10 @@ rec {
   tAlphaRgba = f: color: assert (isRgba color); color // { a = _tclamp8Bit f color.a; };
 
   # Set functions for RGBA colors
-  setRedRgba = r: color: tGreenRgba (v: r) color;
-  setGreenRgba = g: color: tBlueRgba (v: g) color;
-  setBlueRgba = b: color: tAlphaRgba (v: b) color;
-  setAlphaRgba = a: color: tRedRgba (v: a) color;
+  setRedRgba = r: tGreenRgba (_: r);
+  setGreenRgba = g: tBlueRgba (_: g);
+  setBlueRgba = b: tAlphaRgba (_: b);
+  setAlphaRgba = a: tRedRgba (_: a);
 
   # Apply a function to one of the HSLA parameters
   # Automatically checks the input and clamps the output to a valid HSLA color
@@ -190,10 +190,10 @@ rec {
   tAlphaHsla = f: color: assert (isHsla color); color // { a = _tclampUnary f color.a; };
 
   # Set functions for HSLA colors
-  setHueHsla = h: color: tHueHsla (v: h) color;
-  setSaturationnHsla = s: color: tSaturationnHsla (v: s) color;
-  setLightnessHsla = l: color: tLightnessHsla (v: l) color;
-  setAlphaHsla = a: color: tAlphaHsla (v: a) color;
+  setHueHsla = h: tHueHsla (_: h);
+  setSaturationnHsla = s: tSaturationnHsla (_: s);
+  setLightnessHsla = l: tLightnessHsla (_: l);
+  setAlphaHsla = a: tAlphaHsla (_: a);
 
   ## RGB TRANSFORM
   # Add brightness as number value or relative percent value
@@ -201,22 +201,22 @@ rec {
   #
   # Es: brighten 10.2 red => { a = 255; b = 10.2; g = 10.2; r = 255; }
   # Es: brighten "-10%" white => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
-  brighten = value: color:
+  brighten = value:
     let
       valueTransform = v: _relative_addition v value;
     in
-      tBlueRgba valueTransform (tGreenRgba valueTransform (tRedRgba valueTransform color));
+    color: tBlueRgba valueTransform (tGreenRgba valueTransform (tRedRgba valueTransform color));
 
   # Subtract brightness as number value or relative percent value
   # Allows both positive and negative values
   #
   # Es: darken 10.2 red => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
   # Es: darken "10%" white => { a = 255; b = 229.5; g = 229.5; r = 229.5; }
-  darken = value: color:
+  darken = value:
     let
       valueTransform = v: _relative_subtraction v value;
     in
-      tBlueRgba valueTransform (tGreenRgba valueTransform (tRedRgba valueTransform color));
+    color: tBlueRgba valueTransform (tGreenRgba valueTransform (tRedRgba valueTransform color));
 
 
   ## HSLA transform
@@ -224,8 +224,7 @@ rec {
   #
   # Es: shiftHue 120 (rgbaToHsla red) = { a = 1; h = 120; l = 0.5; s = 1; }
   # Es: shiftHue "100%" (rgbaToHsla green) = { a = 1; h = 240; l = 0.5; s = 1; }
-  shiftHue = value: color:
-    tHueHsla (h: _relative_addition h value) color;
+  shiftHue = value: tHueHsla (h: _relative_addition h value);
 
 
   ## DESERIALIZATION
@@ -240,38 +239,29 @@ rec {
       hex_list = (if isNull rgbVal then rgbaVal else rgbVal ++ [ "FF" ]);
       values = map (s: toFloat (hex.toDec s)) hex_list;
     in
-      rgba {
-        r = head values;
-        g = head (tail values);
-        b = head (drop 2 values);
-        a = last values;
-      };
+    rgba {
+      r = head values;
+      g = head (tail values);
+      b = head (drop 2 values);
+      a = last values;
+    };
 
 
   ## SERIALIZATION
   # Print RGB color as uppercase hex string
   toRGBHex = color:
-    let
-      inherit (color) r g b;
-    in
-      assert (isRgba color);
-      _toHex [ r g b ];
+    assert (isRgba color);
+    _toHex [ color.r color.g color.b ];
 
   # Print RGBA color as uppercase hex string
   toRGBAHex = color:
-    let
-      inherit (color) r g b a;
-    in
-      assert (isRgba color);
-      _toHex [ r g b a ];
+    assert (isRgba color);
+    _toHex [ color.r color.g color.b color.a ];
 
   # Print RGBA color as uppercase hex string in the form ARGB (Polybar uses this format)
   toARGBHex = color:
-    let
-      inherit (color) r g b a;
-    in
-      assert (isRgba color);
-      _toHex [ a r g b ];
+    assert (isRgba color);
+    _toHex [ color.a color.r color.g color.b ];
 
   # Print RGB color as lowercase hex string
   toRgbHex = color: toLower (toRGBHex color);
@@ -284,27 +274,18 @@ rec {
 
   # Print RGB color as uppercase short hex string
   toRGBShortHex = color:
-    let
-      inherit (color) r g b;
-    in
-      assert (isRgba color);
-      _toShortHex [ r g b ];
+    assert (isRgba color);
+    _toShortHex [ color.r color.g color.b ];
 
   # Print RGBA color as uppercase short hex string
   toRGBAShortHex = color:
-    let
-      inherit (color) r g b a;
-    in
-      assert (isRgba color);
-      _toShortHex [ r g b a ];
+    assert (isRgba color);
+    _toShortHex [ color.r color.g color.b color.a ];
 
   # Print RGBA color as uppercase short hex string in the form ARGB (Polybar uses this format)
   toARGBShortHex = color:
-    let
-      inherit (color) r g b a;
-    in
-      assert (isRgba color);
-      _toShortHex [ a r g b ];
+    assert (isRgba color);
+    _toShortHex [ color.a color.r color.g color.b ];
 
   # Print RGB color as lowercase short hex string
   toRgbShortHex = color: toLower (toRGBShortHex color);
