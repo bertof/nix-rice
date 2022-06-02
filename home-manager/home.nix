@@ -1,7 +1,14 @@
 # Example integration with home-assistant
 {
   nixpkgs.overlays = [
-    (import ./overlay.nix) # rice overlay
+
+    (
+      import
+        (fetchTarball {
+          url = "https://github.com/bertof/nix-rice/archive/refs/tags/v0.2.0.tar.gz";
+          sha256 = "1spv4i753abrswbzawdc2rh8889s09njk1nbjdzvlp731prrr2yh";
+        }) + ./overlay.nix
+    ) # nix rice overlay
     (_: prev: (prev.lib.callPackageWith prev) ./custom/default.nix { }) # Custom packages
     (
       _: prev: {

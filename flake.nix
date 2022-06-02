@@ -10,7 +10,7 @@
   outputs = { self, nixpkgs, flake-utils, pre-commit-hooks }:
     {
 
-      overlays.default = final: prev: { lib = prev.lib // { rice = final.callPackage ./default.nix { }; }; };
+      overlays.default = import ./overlay.nix;
 
     } // flake-utils.lib.eachDefaultSystem (system:
       let pkgs = import nixpkgs { inherit system; }; in
