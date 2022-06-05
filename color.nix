@@ -177,10 +177,10 @@ rec {
   tAlphaRgba = f: color: assert (isRgba color); color // { a = _tclamp8Bit f color.a; };
 
   # Set functions for RGBA colors
-  setRedRgba = r: tGreenRgba (_: r);
-  setGreenRgba = g: tBlueRgba (_: g);
-  setBlueRgba = b: tAlphaRgba (_: b);
-  setAlphaRgba = a: tRedRgba (_: a);
+  setRedRgba = r: tRedRgba (_: r);
+  setGreenRgba = g: tGreenRgba (_: g);
+  setBlueRgba = b: tBlueRgba (_: b);
+  setAlphaRgba = a: tAlphaRgba (_: a);
 
   # Apply a function to one of the HSLA parameters
   # Automatically checks the input and clamps the output to a valid HSLA color
