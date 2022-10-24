@@ -1,22 +1,22 @@
-{ rice
+{ lib
+, rice
 , roboto
 , i3lock-color
-, update-background
-, writeScript
-, font ? { package = roboto; name = "Roboto"; }
+, writeScriptBin
+, font ? {
+    package = roboto;
+    name = "Roboto";
+  }
 , palette ? rice.palette.palette { }
 , ...
 }:
-let
-  strPalette = rice.palette.toRGBAHex palette;
-in
-writeScript "lockscreen.sh" ''
-  #!/bin/sh
+let strPalette = lib.rice.palette.toRGBAHex palette;
+in writeScriptBin "lockscreen" ''
   # Using font package ${font.package}
   ${i3lock-color}/bin/i3lock-color \
   --insidever-color="${strPalette.normal.green}" \
   --insidewrong-color="${strPalette.normal.red}" \
-  --inside-color="${strPalette.primary.background}" \
+  --inside-color="${strPalette.normal.black}" \
   --ringver-color="${strPalette.bright.green}" \
   --ringwrong-color="${strPalette.bright.red}" \
   --ringver-color="${strPalette.bright.green}" \
@@ -25,7 +25,7 @@ writeScript "lockscreen.sh" ''
   --line-uses-ring \
   --keyhl-color="${strPalette.bright.red}" \
   --bshl-color="${strPalette.bright.red}" \
-  --separator-color="${strPalette.primary.background}" \
+  --separator-color="${strPalette.normal.black}" \
   --verif-color="${strPalette.normal.green}" \
   --wrong-color="${strPalette.normal.red}" \
   --layout-color="${strPalette.normal.blue}" \
@@ -51,6 +51,5 @@ writeScript "lockscreen.sh" ''
   --pass-media-keys \
   --pass-screen-keys \
   --pass-volume-keys \
-  --nofork &&
-  ${update-background}
+  --nofork
 ''
