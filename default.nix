@@ -9,4 +9,4 @@ let
     palette = callPackage ./palette.nix { };
   };
 in
-(self)
+self

@@ -21,7 +21,7 @@ rec {
   floor = f:
     let
       floatComponents = splitString "." (toString f);
-      int = toInt (head (floatComponents));
+      int = toInt (head floatComponents);
     in
     assert(isFloat f);
     int;

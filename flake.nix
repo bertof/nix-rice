@@ -18,7 +18,7 @@
         checks = {
           pre-commit-check = pre-commit-hooks.lib.${system}.run {
             src = ./.;
-            hooks = { nixpkgs-fmt.enable = true; nix-linter.enable = true; };
+            hooks = { nixpkgs-fmt.enable = true; nix-linter.enable = true; statix.enable = true; };
           };
         };
 
