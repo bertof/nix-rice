@@ -36,7 +36,7 @@ let
 
   # Convert 8bit value to a 2 digit hex string without initial #
   _toShortHex = values:
-    assert(all (_is8Bit) values);
+    assert(all _is8Bit values);
     ''${concatMapStrings (v: fixedWidthString 2 "0" (fromDec (round (toFloat v)))) values}'';
 
   # Convert 8bit value to a 2 digit hex string
@@ -136,14 +136,11 @@ rec {
 
   # HSLA to RGBA
   hslaToRgba = color:
+    assert (isHsla color);
     let
       # check if `v` is in [a, b)
       # _checkRange = a: b: v: a <= v && v < b;
-      c_color = hsla color;
-      h = c_color.h;
-      s = c_color.s;
-      l = c_color.l;
-      a = c_color.a;
+      inherit (hsla color) h s l a;
       c = (1 - (abs (2 * l - 1))) * s;
       x = c * (1 - abs ((mod' (h / 60) 2) - 1));
       m = l - (c / 2.0);
@@ -158,7 +155,6 @@ rec {
       if inRange 120 360 h then x else
       0;
     in
-    assert (isHsla color);
     rgba {
       r = (r' + m) * 255.0;
       g = (g' + m) * 255.0;
@@ -236,7 +232,7 @@ rec {
     let
       rgbaVal = _match4hex s;
       rgbVal = _match3hex s;
-      hex_list = (if isNull rgbVal then rgbaVal else rgbVal ++ [ "FF" ]);
+      hex_list = if null == rgbVal then rgbaVal else rgbVal ++ [ "FF" ];
       values = map (s: toFloat (hex.toDec s)) hex_list;
     in
     rgba {
