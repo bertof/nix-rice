@@ -1,10 +1,8 @@
 { color, lib, ... }:
 let
-  inherit (builtins) isString;
   inherit (lib.attrsets) mapAttrsRecursiveCond;
 in
 rec{
-
   # Palette constructor
   # Produces a palette of colors starting from sane defaults
   # Override the inputs with your favorite colors
@@ -67,5 +65,4 @@ rec{
 
   # Try to convert input colors to a lowercase hex encoded RGB color in the form argb (Polybar uses this format)
   toArgbShortHex = tPalette color.toArgbShortHex;
-
 }

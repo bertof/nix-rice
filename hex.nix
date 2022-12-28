@@ -32,8 +32,7 @@ let
     getAttr k dict;
 
 in
-rec {
-
+{
   # Convert an hexadecimal string to an integer
   toDec = s:
     let
@@ -44,5 +43,4 @@ rec {
 
   # Convert an integer to a decimal string
   fromDec = toHexString;
-
 }
