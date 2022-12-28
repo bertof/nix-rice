@@ -1,4 +1,4 @@
-{ pkgs, lib ? pkgs.lib, op, ... }:
+{ lib, op, ... }:
 let
   inherit (builtins) fromJSON head isFloat isInt isString;
   inherit (lib.strings) splitString toInt;

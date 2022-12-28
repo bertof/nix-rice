@@ -1,6 +1,6 @@
-{ pkgs, lib ? pkgs.lib, ... }:
+{ lib, ... }:
 let
-  inherit (builtins) abort isFloat isInt;
+  inherit (builtins) isFloat isInt;
   inherit (lib.trivial) max min;
 in
 rec {

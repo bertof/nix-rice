@@ -1,7 +1,7 @@
 { pkgs }:
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // self);
-  self = rec {
+  self = {
     op = callPackage ./operators.nix { };
     float = callPackage ./float.nix { };
     hex = callPackage ./hex.nix { };

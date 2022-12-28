@@ -1,4 +1,4 @@
-{ pkgs, lib ? pkgs.lib, ... }:
+{ lib, ... }:
 let
   inherit (builtins) getAttr hasAttr;
   inherit (lib.lists) foldl;
@@ -32,8 +32,7 @@ let
     getAttr k dict;
 
 in
-rec {
-
+{
   # Convert an hexadecimal string to an integer
   toDec = s:
     let
@@ -44,5 +43,4 @@ rec {
 
   # Convert an integer to a decimal string
   fromDec = toHexString;
-
 }

@@ -1,10 +1,10 @@
-{ pkgs, lib ? pkgs.lib, hex, float, op, ... }:
+{ lib, hex, float, op, ... }:
 let
-  inherit (builtins) add div fromJSON getAttr hasAttr isAttrs isFloat isInt isString sub trace;
+  inherit (builtins) add fromJSON getAttr hasAttr sub;
   inherit (float) mod' round toFloat;
   inherit (hex) fromDec;
   inherit (lib.lists) all drop head last tail;
-  inherit (lib.strings) concatMapStrings fixedWidthString match toInt toLower;
+  inherit (lib.strings) concatMapStrings fixedWidthString match toLower;
   inherit (lib.trivial) max min;
   inherit (op) abs clamp inRange isNumber;
 
