@@ -1,1 +1,1 @@
-self: super: { lib = super.lib // { rice = self.callPackage ./default.nix { }; }; }
+self: super: { lib = super.lib // { rice = self.callPackage ./lib.nix { }; }; }
