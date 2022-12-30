@@ -52,6 +52,22 @@
         "type": "github"
       }
     },
+    "kitty-themes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1669518372,
+        "narHash": "sha256-PGV/iPg7nFW8RMEMJbt1oGcAzTaS3u6I+sCpIDrx7ic=",
+        "owner": "kovidgoyal",
+        "repo": "kitty-themes",
+        "rev": "4d309e984b81dd120d7a697abe4f817da6f3cfe5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kovidgoyal",
+        "repo": "kitty-themes",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1671271357,
@@ -126,6 +142,7 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
+        "kitty-themes": "kitty-themes",
         "nixpkgs-lib": "nixpkgs-lib",
         "pre-commit-hooks": "pre-commit-hooks"
       }
