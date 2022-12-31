@@ -1,4 +1,4 @@
-{ pkgs, lib ? pkgs.lib, ... }:
+{ lib, ... }:
 let
   inherit (builtins) getAttr hasAttr;
   inherit (lib.lists) foldl;

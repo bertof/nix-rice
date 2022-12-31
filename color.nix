@@ -1,4 +1,4 @@
-{ pkgs, lib ? pkgs.lib, hex, float, op, ... }:
+{ lib, hex, float, op, ... }:
 let
   inherit (builtins) add fromJSON getAttr hasAttr sub;
   inherit (float) mod' round toFloat;
