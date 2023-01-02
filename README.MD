@@ -39,7 +39,7 @@ let
     ref = "refs/tags/v0.3.0";  
   };
   nix-rice-overlay = import (nix-rice + "/overlay.nix");
-  pkgs = import <nixpkgs> { overlays = [ nix-rice-overlay ];}
+  pkgs = import <nixpkgs> { overlays = [ nix-rice-overlay ];};
 in
 {
   # < YOUR CONFIGURATION HERE >
@@ -93,7 +93,8 @@ The general workflow to use Nix-rice is the following:
 
 1. **Define a color palette**: you can load any of the themes in [Kitty themes](https://github.com/kovidgoyal/kitty-themes/tree/4d309e984b81dd120d7a697abe4f817da6f3cfe5/themes) or create one from scratch:
   ```nix
-  colorPalette = with pkgs.lib.nix-rice; palette.tPalette color.hexToRgba {
+  with pkgs.lib.nix-rice;
+  colorPalette = palette.tPalette color.hexToRgba {
     red = "#FF0000FF";
     green = "#00FF00FF";
     green = "#0000FFFF";
@@ -126,7 +127,7 @@ The general workflow to use Nix-rice is the following:
         cyan = theme.color14;
         white = theme.color15;
       };
-    } // theme
+    } // theme;
   }
   ```
 
