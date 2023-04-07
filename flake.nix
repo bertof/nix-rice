@@ -22,7 +22,6 @@
           src = ./.;
           hooks = {
             deadnix.enable = true;
-            nix-linter.enable = true;
             nixpkgs-fmt.enable = true;
             statix.enable = true;
           };
