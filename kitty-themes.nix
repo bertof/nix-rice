@@ -1,4 +1,4 @@
-{ lib, color, kitty-themes, ... }:
+{ lib, color, kitty-themes-src, ... }:
 let
   # Theme path to its readable name
   _themePathToThemeName = path:
@@ -8,11 +8,11 @@ let
     in
     theme_name;
 
-  _themeNameToThemePath = name: "${kitty-themes}/themes/${name}.conf";
+  _themeNameToThemePath = name: "${kitty-themes-src}/themes/${name}.conf";
 in
 rec {
-  # List of themes in kitty-themes
-  themesFilesPaths = lib.filesystem.listFilesRecursive "${kitty-themes}/themes";
+  # List of themes in kitty-themes-src
+  themesFilesPaths = lib.filesystem.listFilesRecursive "${kitty-themes-src}/themes";
 
   themesNames = map _themePathToThemeName themesFilesPaths;
 

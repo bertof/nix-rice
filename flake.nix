@@ -4,13 +4,13 @@
   inputs = {
     nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
     flake-utils.url = "github:numtide/flake-utils";
-    kitty-themes = { url = "github:kovidgoyal/kitty-themes"; flake = false; };
+    kitty-themes-src = { url = "github:kovidgoyal/kitty-themes"; flake = false; };
     pre-commit-hooks = { url = "github:cachix/pre-commit-hooks.nix"; inputs.flake-utils.follows = "flake-utils"; };
   };
 
-  outputs = { self, nixpkgs-lib, flake-utils, kitty-themes, pre-commit-hooks }: {
+  outputs = { self, nixpkgs-lib, flake-utils, kitty-themes-src, pre-commit-hooks }: {
     # library
-    lib = nixpkgs-lib.lib.callPackagesWith { inherit (nixpkgs-lib) lib; inherit kitty-themes; } ./lib.nix { };
+    lib = nixpkgs-lib.lib.callPackagesWith { inherit (nixpkgs-lib) lib; inherit kitty-themes-src; } ./lib.nix { };
 
     # overlay
     overlays.default = import ./overlay.nix;

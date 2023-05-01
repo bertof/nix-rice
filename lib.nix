@@ -1,6 +1,6 @@
-{ lib, kitty-themes, ... }:
+{ lib, kitty-themes-src, ... }:
 let
-  callPackage = lib.callPackageWith (self // { inherit lib kitty-themes; });
+  callPackage = lib.callPackageWith (self // { inherit lib kitty-themes-src; });
   self = {
     op = callPackage ./operators.nix { };
     float = callPackage ./float.nix { };
