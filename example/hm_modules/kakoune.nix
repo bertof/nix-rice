@@ -72,207 +72,209 @@ let
 
 in
 {
-  programs.bash.shellAliases = { k = "kak"; };
-  programs.zsh.shellAliases = { k = "kak"; };
-  home.packages = packages;
-  programs.kakoune = {
-    enable = true;
-    config = {
-      colorScheme = "nord";
-      tabStop = 2;
-      indentWidth = 2;
-      alignWithTabs = true;
-      scrollOff = {
-        lines = 5;
-        columns = 3;
-      };
-      ui = {
-        setTitle = true;
-        changeColors = true;
-        enableMouse = true;
-      };
-      wrapLines = {
-        enable = true;
-        word = true;
-      };
-      numberLines = {
-        enable = true;
-        highlightCursor = true;
-      };
-      keyMappings = [
-        {
-          mode = "normal";
-          docstring = "Edit file";
-          key = "<c-e>";
-          effect = ":edit<space>";
-        }
-        {
-          mode = "user";
-          docstring = "Code actions";
-          key = "a";
-          effect = ":lsp-code-actions<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Comment block";
-          key = "b";
-          effect = ":comment-block<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Comment line";
-          key = "l";
-          effect = ":comment-line<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Copy to clipboard";
-          key = "y";
-          effect = "<a-|>${pkgs.xclip}/bin/xclip -i -selection clipboard<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Format code with formatter";
-          key = "f";
-          effect = ":format<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Format code with LSP";
-          key = "F";
-          effect = ":lsp-formatting-sync<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Jump to definition";
-          key = "d";
-          effect = ":lsp-definition<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Rename object";
-          key = "r";
-          effect = ":lsp-rename-prompt<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Jump to type definition";
-          key = "t";
-          effect = ":lsp-type-definition<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "List project diagnostics";
-          key = "i";
-          effect = ":lsp-diagnostics<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Paste from clipboard (after)";
-          key = "P";
-          effect = "<a-!>${pkgs.xclip}/bin/xclip -selection clipboard -o<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Paste from clipboard (before)";
-          key = "p";
-          effect = "!${pkgs.xclip}/bin/xclip -selection clipboard -o<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Show hover info";
-          key = "q";
-          effect = ":lsp-hover<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Spellcheck English";
-          key = "S";
-          effect = ":spell en<ret>";
-        }
-        {
-          mode = "user";
-          docstring = "Spellcheck";
-          key = "s";
-          effect = ":spell ";
-        }
-        {
-          mode = "normal";
-          docstring = "Try next snippet placeholder";
-          key = "<c-n>";
-          effect = "<a-;>: insert-c-n<ret>";
-        }
-        # { mode = "normal"; docstring = "Search"; key = "/"; effect = "/(?i)"; }
-        # { mode = "normal"; docstring = "Reverse search"; key = "<a-/>"; effect = "<a-/>(?i)"; }
-      ];
-      hooks = with pkgs; [
-        {
-          name = "BufCreate";
-          option = ".*";
-          commands = "editorconfig-load";
-        }
-        # { name = "ModuleLoaded"; option = "auto-pairs"; commands = "auto-pairs-enable"; }
-        {
-          name = "ModuleLoaded";
-          option = "powerline";
-          commands = "powerline-enable; powerline-start";
-        }
-        {
-          name = "BufSetOption";
-          option = "filetype=latex";
-          commands = "set-option buffer formatcmd latexindent";
-        }
-        {
-          name = "BufSetOption";
-          option = "filetype=python";
-          commands = "set-option buffer formatcmd 'black -'";
-        }
-        {
-          name = "BufSetOption";
-          option = "filetype=(markdown|html|json|yaml|css|scss|less)";
-          commands = "set-option buffer formatcmd prettier";
-        }
-        {
-          name = "BufSetOption";
-          option = "filetype=rust";
-          commands = "set-option buffer formatcmd 'rustfmt'";
-        }
-        {
-          name = "BufSetOption";
-          option = "filetype=sh";
-          commands = "set-option buffer formatcmd 'rustfmt'";
-        }
-      ];
-      # TODO add more formatters from https://github.com/mawww/kakoune/wiki/Format
-    };
-    extraConfig = builtins.concatStringsSep "\n" [
-      "# Custom commands"
-      "add-highlighter global/ regex \\h+$ 0:Error                   # Highlight trailing spaces"
-      "eval %sh{kak-lsp --kakoune -s $kak_session}"
-      "lsp-enable"
-      ''
-        def -hidden insert-c-n %{
-          try %{
-             lsp-snippets-select-next-placeholders
-             exec '<a-;>d'
-          } catch %{
-             exec -with-hooks '<c-n>'
+  programs = {
+    bash.shellAliases = { k = "kak"; };
+    zsh.shellAliases = { k = "kak"; };
+    kakoune = {
+      enable = true;
+      config = {
+        colorScheme = "nord";
+        tabStop = 2;
+        indentWidth = 2;
+        alignWithTabs = true;
+        scrollOff = {
+          lines = 5;
+          columns = 3;
+        };
+        ui = {
+          setTitle = true;
+          changeColors = true;
+          enableMouse = true;
+        };
+        wrapLines = {
+          enable = true;
+          word = true;
+        };
+        numberLines = {
+          enable = true;
+          highlightCursor = true;
+        };
+        keyMappings = [
+          {
+            mode = "normal";
+            docstring = "Edit file";
+            key = "<c-e>";
+            effect = ":edit<space>";
           }
-        }
-      ''
-      "require-module powerline"
-      "require-module connect-broot"
-      "require-module connect-lf"
-      "require-module connect-rofi"
-    ];
-    plugins = with pkgs.kakounePlugins; [
-      prelude-kak
-      kak-lsp
-      auto-pairs-kak
-      powerline-kak
-      connect-kak
-    ];
+          {
+            mode = "user";
+            docstring = "Code actions";
+            key = "a";
+            effect = ":lsp-code-actions<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Comment block";
+            key = "b";
+            effect = ":comment-block<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Comment line";
+            key = "l";
+            effect = ":comment-line<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Copy to clipboard";
+            key = "y";
+            effect = "<a-|>${pkgs.xclip}/bin/xclip -i -selection clipboard<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Format code with formatter";
+            key = "f";
+            effect = ":format<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Format code with LSP";
+            key = "F";
+            effect = ":lsp-formatting-sync<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Jump to definition";
+            key = "d";
+            effect = ":lsp-definition<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Rename object";
+            key = "r";
+            effect = ":lsp-rename-prompt<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Jump to type definition";
+            key = "t";
+            effect = ":lsp-type-definition<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "List project diagnostics";
+            key = "i";
+            effect = ":lsp-diagnostics<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Paste from clipboard (after)";
+            key = "P";
+            effect = "<a-!>${pkgs.xclip}/bin/xclip -selection clipboard -o<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Paste from clipboard (before)";
+            key = "p";
+            effect = "!${pkgs.xclip}/bin/xclip -selection clipboard -o<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Show hover info";
+            key = "q";
+            effect = ":lsp-hover<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Spellcheck English";
+            key = "S";
+            effect = ":spell en<ret>";
+          }
+          {
+            mode = "user";
+            docstring = "Spellcheck";
+            key = "s";
+            effect = ":spell ";
+          }
+          {
+            mode = "normal";
+            docstring = "Try next snippet placeholder";
+            key = "<c-n>";
+            effect = "<a-;>: insert-c-n<ret>";
+          }
+          # { mode = "normal"; docstring = "Search"; key = "/"; effect = "/(?i)"; }
+          # { mode = "normal"; docstring = "Reverse search"; key = "<a-/>"; effect = "<a-/>(?i)"; }
+        ];
+        hooks = with pkgs; [
+          {
+            name = "BufCreate";
+            option = ".*";
+            commands = "editorconfig-load";
+          }
+          # { name = "ModuleLoaded"; option = "auto-pairs"; commands = "auto-pairs-enable"; }
+          {
+            name = "ModuleLoaded";
+            option = "powerline";
+            commands = "powerline-enable; powerline-start";
+          }
+          {
+            name = "BufSetOption";
+            option = "filetype=latex";
+            commands = "set-option buffer formatcmd latexindent";
+          }
+          {
+            name = "BufSetOption";
+            option = "filetype=python";
+            commands = "set-option buffer formatcmd 'black -'";
+          }
+          {
+            name = "BufSetOption";
+            option = "filetype=(markdown|html|json|yaml|css|scss|less)";
+            commands = "set-option buffer formatcmd prettier";
+          }
+          {
+            name = "BufSetOption";
+            option = "filetype=rust";
+            commands = "set-option buffer formatcmd 'rustfmt'";
+          }
+          {
+            name = "BufSetOption";
+            option = "filetype=sh";
+            commands = "set-option buffer formatcmd 'rustfmt'";
+          }
+        ];
+        # TODO add more formatters from https://github.com/mawww/kakoune/wiki/Format
+      };
+      extraConfig = builtins.concatStringsSep "\n" [
+        "# Custom commands"
+        "add-highlighter global/ regex \\h+$ 0:Error                   # Highlight trailing spaces"
+        "eval %sh{kak-lsp --kakoune -s $kak_session}"
+        "lsp-enable"
+        ''
+          def -hidden insert-c-n %{
+            try %{
+               lsp-snippets-select-next-placeholders
+               exec '<a-;>d'
+            } catch %{
+               exec -with-hooks '<c-n>'
+            }
+          }
+        ''
+        "require-module powerline"
+        "require-module connect-broot"
+        "require-module connect-lf"
+        "require-module connect-rofi"
+      ];
+      plugins = with pkgs.kakounePlugins; [
+        prelude-kak
+        kak-lsp
+        auto-pairs-kak
+        powerline-kak
+        connect-kak
+      ];
+    };
   };
+  home.packages = packages;
 
   # THEME FILE
   xdg.configFile."kak/colors/nord.kak".text =
