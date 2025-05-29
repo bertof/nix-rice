@@ -7,8 +7,8 @@
     nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
     kitty-themes-src = { url = "github:kovidgoyal/kitty-themes"; flake = false; };
     systems.url = "github:nix-systems/default";
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    git-hooks-nix.url = "github:cachix/git-hooks.nix";
+    flake-parts = { url = "github:hercules-ci/flake-parts"; inputs.nixpkgs-lib.follows = "nixpkgs-lib"; };
+    git-hooks-nix = { url = "github:cachix/git-hooks.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } {
