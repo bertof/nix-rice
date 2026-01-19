@@ -2,7 +2,6 @@
   description = "Minimal flake environment";
 
   inputs = {
-
     nixpkgs.url = "github:nixos/nixpkgs";
     nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
     kitty-themes-src = { url = "github:kovidgoyal/kitty-themes"; flake = false; };
@@ -22,12 +21,25 @@
       };
 
       devShells.default = pkgs.mkShell {
-        shellHook = ''
-          ${config.pre-commit.installationScript}
-        '';
+        inputsFrom = [ config.pre-commit.devShell ];
       };
 
       formatter = pkgs.nixpkgs-fmt;
+
+      checks.tests =
+        let
+          inherit (inputs.nixpkgs-lib) lib;
+          inherit (inputs) kitty-themes-src;
+          nix-rice-lib =
+            lib.callPackagesWith { inherit lib kitty-themes-src; } ./lib.nix
+              { };
+          # Evaluate tests - assertions will fail the build if they don't pass
+          testResult = import ./tests/default.nix { inherit nix-rice-lib; };
+        in
+        pkgs.runCommand "tests" { } ''
+          ${lib.deepSeq testResult ""}
+          touch $out
+        '';
     };
 
     flake =
@@ -38,8 +50,10 @@
       in
       {
         lib = { inherit nix-rice; };
+
         overlays.default = _self: super: { lib = super.lib // { inherit nix-rice; }; };
-        modules.default = { config, lib, pkgs, ... }: {
+
+        nixosModules.default = { config, lib, pkgs, ... }: {
           options.nix-rice = {
             enable = lib.mkEnableOption "nix-rice, a ricing framework for your system configurations";
             lib = lib.mkOption {
@@ -60,7 +74,7 @@
                   normal = { name = "Cantarell"; package = pkgs.cantarell-fonts; size = 10; };
                   monospace = { name = "CaskaydiaCove Nerd Font"; package = pkgs.nerdfonts.override { fonts = [ "CascadiaCode" ]; }; size = 10; };
                 };
-                opacity = .95;
+                opacity = 0.95;
               };
             };
             rice = lib.mkOption {
